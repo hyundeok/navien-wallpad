@@ -3,12 +3,12 @@ const util = require('util');
 const { SerialPort } = require('serialport')
 const { DelimiterParser } = require('@serialport/parser-delimiter')
 const mqtt = require('mqtt');
-const CONFIG = require('./options.json');
+const CONFIG = require('./config.json');
 const CONST = {
-	mqttBroker: 'mqtt://' + CONFIG.mqtt.server,
-	mqttDelay: CONFIG.mqtt.receiveDelay,
-	mqttUser: CONFIG.mqtt.username,
-	mqttPass: CONFIG.mqtt.password,
+	mqttBroker: 'mqtt://' + CONFIG.options.mqtt.server,
+	mqttDelay: CONFIG.options.mqtt.receiveDelay,
+	mqttUser: CONFIG.options.mqtt.username,
+	mqttPass: CONFIG.options.mqtt.password,
 	clientID: 'Navien',
 	DEVICES: [
 		{deviceId: 'Light1', subId: '1', state: 'ON',  name: '침실', stateMask: {pos: -1, value: ''}, stateHex: Buffer.alloc(8, '0e2f81020001540c', 'hex'), commandHex: Buffer.alloc(8, 'f70e214101019902', 'hex')},
@@ -102,7 +102,7 @@ client.on('message', (topic, message) => {
 
 // EW11 연결
 const sock = new net.Socket();
-sock.connect(CONFIG.socket.port, CONFIG.socket.deviceIP, function() {
+sock.connect(CONFIG.options.socket.port, CONFIG.options.socket.deviceIP, function() {
 	log('[Socket] Connected socket');
 });
 
