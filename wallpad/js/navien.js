@@ -44,55 +44,6 @@ var lastReceive = new Date().getTime();
 var mqttReady = false;
 var queue = new Array();
 
-//
-const client = mqtt.connect(CONST.mqttBroker, {
-		clientId: CONST.clientID,
-		username: CONST.mqttUser,
-		password: CONST.mqttPass
-	}
-);
-
-client.on('connect', () => {
-	var device_list = Array.from(new Set(CONST.DEVICES.map(e => e.deviceId + "-" + e.subId)));
-	var topics = new Array();
-
-	console.log(device_list);
-	device_list.forEach(targetName => {
-		topics.push(CONST.TOPIC_PREFIX + '/' + targetName + '/status');
-		topics.push(CONST.TOPIC_PREFIX + '/' + targetName + '/command');
-	});
-
-	client.subscribe(topics, (err) => {
-		if (err) log('MQTT Subscribe fail! -', CONST.DEVICE_TOPIC);
-		console.log(client);
-	});
-});
-
-client.on('message', (topic, message) => {
-	if (!mqttReady) return;
-
-	var topics = topic.split('/');
-	var msg = message.toString();
-
-	if(topics[2] == 'status') {
-		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
-		//homeStatus[topic] = message.toString();
-		//client.publish(topic, obj[stateName], {retain: true});
-	} else {
-		/*
-			payload -> ON -> 4f 4e
-			payload -> OFF -> 4f 46 46
-		*/
-		var objFound = CONST.DEVICES.find(e => topics[1] == e.deviceId + "-" + e.subId && topics[2] == 'command' && msg == e.state);
-		if (typeof objFound == "undefined") {
-			console.log("not found device");
-		} else {
-			console.log(objFound);
-			queue.push(objFound);
-		}
-	}
-});
-
 // EW11 연결
 const sock = new net.Socket();
 sock.connect(CONFIG.options.socket.port, CONFIG.options.socket.deviceIP, function() {
@@ -125,6 +76,55 @@ parser.on('data', buffer => {
 			}
 		}
 	});
+});
+
+//
+const client = mqtt.connect(CONST.mqttBroker, {
+		clientId: CONST.clientID,
+		username: CONST.mqttUser,
+		password: CONST.mqttPass
+	}
+);
+
+client.on('connect', () => {
+	var device_list = Array.from(new Set(CONST.DEVICES.map(e => e.deviceId + "-" + e.subId)));
+	var topics = new Array();
+
+	console.log(device_list);
+	device_list.forEach(targetName => {
+		topics.push(CONST.TOPIC_PREFIX + '/' + targetName + '/status');
+		topics.push(CONST.TOPIC_PREFIX + '/' + targetName + '/command');
+	});
+
+	client.subscribe(topics, (err) => {
+		if (err) log('MQTT Subscribe fail! -', CONST.DEVICE_TOPIC);
+		log('Success subscribe MQTT');
+	});
+});
+
+client.on('message', (topic, message) => {
+	if (!mqttReady) return;
+
+	var topics = topic.split('/');
+	var msg = message.toString();
+
+	if(topics[2] == 'status') {
+		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
+		//homeStatus[topic] = message.toString();
+		//client.publish(topic, obj[stateName], {retain: true});
+	} else {
+		/*
+			payload -> ON -> 4f 4e
+			payload -> OFF -> 4f 46 46
+		*/
+		var objFound = CONST.DEVICES.find(e => topics[1] == e.deviceId + "-" + e.subId && topics[2] == 'command' && msg == e.state);
+		if (typeof objFound == "undefined") {
+			console.log("not found device");
+		} else {
+			//console.log(objFound);
+			queue.push(objFound);
+		}
+	}
 });
 
 //
@@ -162,4 +162,4 @@ setTimeout(() => {
 	mqttReady = true;
 	log('Ready MQTT...')
 }, CONST.mqttDelay);
-setInterval(commandProc, 200);
+setInterval(commandProc, 100);

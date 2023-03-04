@@ -20,8 +20,8 @@
 	"options": {
 		"mqtt": {
 			"server": "192.168.1.200",
-			"username": "-user-name-",
-			"password": "-pass-word-",
+			"username": "aiseki",
+			"password": "ss1024ss1024",
 			"receiveDelay": 3000
 		},
 		"socket" : {
@@ -37,8 +37,8 @@
 			"receiveDelay": "int"
 		},
 		"socket" : {
-                        "deviceIP": "str?",
-                        "port": "int?"
+                        "deviceIP": "str",
+                        "port": "int"
                 }
 	}
 }
