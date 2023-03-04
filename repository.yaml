@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: Navien Wallpad Controller with RS485
+url: https://github.com/goldfinger8157/navien-wallpad
+maintainer: Jongwan Kim <aiseki@gmail.com>

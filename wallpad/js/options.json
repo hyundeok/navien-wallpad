@@ -1,0 +1,32 @@
+{
+	"name": "Navien Controller with RS485",
+	"version": "0.0.1",
+	"slug": "wallpad",
+	"description": "나비엔월패드 애드온(주안역센트레빌)",
+	"arch": [
+		"armhf",
+		"armv7",
+		"aarch64",
+		"amd64",
+		"i386"
+	],
+	"map": [
+		"share:rw"
+	],
+	"url": "https://github.com/goldfinger8157/navien-wallpad",
+	"startup": "application",
+	"boot": "auto",
+	"uart": true,
+	"mqtt": {
+		"server": "192.168.1.200",
+		"username": "aiseki",
+		"password": "ss1024ss1024",
+		"receiveDelay": 3000
+	},
+
+	"socket" : {
+		"deviceIP": "192.168.1.201",
+		"port": 9999
+	}
+}
+
