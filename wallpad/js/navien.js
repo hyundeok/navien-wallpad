@@ -73,7 +73,6 @@ client.on('message', (topic, message) => {
 
 	var topics = topic.split('/');
 	var msg = message.toString();
-	log(topics, msg);
 
 	if(topics[2] == 'status') {
 		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
@@ -84,15 +83,13 @@ client.on('message', (topic, message) => {
 			payload -> ON -> 4f 4e
 			payload -> OFF -> 4f 46 46
 		*/
-
 		var objFound = CONST.DEVICES.find(e => topics[1] == e.deviceId + "-" + e.subId && topics[2] == 'command' && msg == e.state);
 		if (typeof objFound == "undefined") {
 			console.log("not found device");
-			return;
+		} else {
+			console.log(objFound);
+			queue.push(objFound);
 		}
-
-		//console.log(objFound);
-		queue.push(objFound);		
 	}
 });
 
@@ -158,11 +155,11 @@ const commandProc = () => {
 
   var obj = queue.shift();
   sock.write(obj.commandHex);
-  log('[Socket] (Send)', obj.deviceId + "-" + obj.subId, obj.name, '->', obj.state);
+  log('[Socket] (Send)', obj.deviceId + '-' + obj.subId, obj.name, '->', obj.state);
 }
 
 setTimeout(() => {
 	mqttReady = true;
 	log('Ready MQTT...')
 }, CONST.mqttDelay);
-setInterval(commandProc, 100);
+setInterval(commandProc, 200);
