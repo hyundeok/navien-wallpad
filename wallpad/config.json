@@ -1,15 +1,15 @@
 {
-  "name": "Navien Wallpad Controller with RS485",
-  "version": "0.0.1",
-  "slug": "wallpad",
-  "description": "주안역센트레빌 경동나비엔 월패드용 애드온 (Node.js)",
-  "arch": [
-    "armhf",
-    "armv7",
-    "aarch64",
-    "amd64",
-    "i386"
-  ],
+	"name": "Navien Wallpad Controller with RS485",
+	"version": "0.0.1",
+	"slug": "wallpad",
+	"description": "주안역센트레빌 경동나비엔 월패드용 애드온 (Node.js)",
+	"arch": [
+		"armhf",
+		"armv7",
+		"aarch64",
+		"amd64",
+		"i386"
+	],
 	"map": [
 		"share:rw"
 	],
