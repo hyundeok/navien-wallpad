@@ -11,6 +11,7 @@ RUN apt-get -y install build-essential udev
 RUN mkdir -p /app/js
 COPY run.sh /app/
 COPY js /app/js
+COPY config.json /app/
 
 WORKDIR /app
 
