@@ -3,7 +3,7 @@ const util = require('util');
 const { SerialPort } = require('serialport')
 const { DelimiterParser } = require('@serialport/parser-delimiter')
 const mqtt = require('mqtt');
-const CONFIG = require('./config.json');
+const CONFIG = require('../config.json');
 const CONST = {
 	mqttBroker: 'mqtt://' + CONFIG.options.mqtt.server,
 	mqttDelay: CONFIG.options.mqtt.receiveDelay,
