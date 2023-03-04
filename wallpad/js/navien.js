@@ -73,7 +73,7 @@ client.on('message', (topic, message) => {
 
 	var topics = topic.split('/');
 	var msg = message.toString();
-	log(topic, msg);
+	log(topics, msg);
 
 	if(topics[2] == 'status') {
 		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
