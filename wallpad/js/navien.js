@@ -93,10 +93,8 @@ client.on('message', (topic, message) => {
 			return;
 		}
 
-		console.log(objFound);
-		//sock.write(objFound.commandHex);
-		queue.push(objFound);
-		log('[Socket] (Send)', objFound.deviceId + "-" + objFound.subId, objFound.name, '->', objFound.state);
+		//console.log(objFound);
+		queue.push(objFound);		
 	}
 });
 
@@ -162,12 +160,11 @@ const commandProc = () => {
 
   var obj = queue.shift();
   sock.write(obj.commandHex);
-
-  log('SerialPort Send:', obj.name, '->', obj.state);
+  log('[Socket] (Send)', obj.deviceId + "-" + obj.subId, obj.name, '->', obj.state);
 }
 
 setTimeout(() => {
 	mqttReady = true;
 	log('Ready MQTT...')
 }, CONST.mqttDelay);
-setInterval(commandProc, 20);
+setInterval(commandProc, 100);
