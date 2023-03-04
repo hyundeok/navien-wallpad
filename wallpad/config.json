@@ -20,8 +20,8 @@
 	"options": {
 		"mqtt": {
 			"server": "192.168.1.200",
-			"username": "aiseki",
-			"password": "ss1024ss1024",
+			"username": "-user-name-",
+			"password": "-pass-word-",
 			"receiveDelay": 3000
 		},
 		"socket" : {
