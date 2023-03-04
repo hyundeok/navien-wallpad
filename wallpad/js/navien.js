@@ -71,11 +71,9 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
 	if (!mqttReady) return;
 
-	console.log(topic);
-	console.log(message);
 	var topics = topic.split('/');
 	var msg = message.toString();
-	console.log(msg);
+	log(topic, msg);
 
 	if(topics[2] == 'status') {
 		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
