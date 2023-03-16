@@ -4,7 +4,7 @@
 1. [네이버 Homeassistant 카페](https://cafe.naver.com/koreassistant)에서 코드를 참조해 개인적인 용도로 만들었습니다.
 2. 환경에 따라서 정상적으로 동작하지 않을 수 있습니다.
 
-## Version : 0.0.1
+## Version : 0.0.2
 
 ## Installation
 
