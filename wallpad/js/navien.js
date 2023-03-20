@@ -33,11 +33,11 @@ const CONST = {
 		{deviceId: 'Ventilator', subId: '1', state: 'MID', name: '환기', stateMask: {pos: -1, value: ''}, stateHex: Buffer.alloc(11, '32018105000102030040f6', 'hex'), commandHexList: [Buffer.alloc(8, 'f7320142010285f4', 'hex')]},
 		{deviceId: 'Ventilator', subId: '1', state: 'HIGH', name: '환기', stateMask: {pos: -1, value: ''}, stateHex: Buffer.alloc(11, '32018105000103030041f8', 'hex'), commandHexList: [Buffer.alloc(8, 'f7320142010384f4', 'hex')]},
 		{deviceId: 'Ventilator', subId: '1', state: 'OFF', name: '환기', stateMask: {pos: -1, value: ''}, stateHex: Buffer.alloc(11, '32018105000000030043f6', 'hex'), commandHexList: [Buffer.alloc(8, 'f7320141010084f0', 'hex')]},
-		{deviceId: 'AirQuality', subId: '1', state: '0', name: '초미세먼지', stateMask: {pos: [6], value: '?'}, stateHex: Buffer.alloc(6, '4401810c0000', 'hex'), commandHexList: []},
-		{deviceId: 'AirQuality', subId: '2', state: '0', name: '미세먼지', stateMask: {pos: [8], value: '?'}, stateHex: Buffer.alloc(6, '4401810c0000', 'hex'), commandHexList: []},
-		{deviceId: 'AirQuality', subId: '3', state: '0', name: '유해가스', stateMask: {pos: [9, 10], value: '?'}, stateHex: Buffer.alloc(6, '4401810c0000', 'hex'), commandHexList: []},
-		{deviceId: 'AirQuality', subId: '4', state: '0', name: '온도', stateMask: {pos: [11], value: '?'}, stateHex: Buffer.alloc(6, '4401810c0000', 'hex'), commandHexList: []},
-		{deviceId: 'AirQuality', subId: '5', state: '0', name: '습도', stateMask: {pos: [13], value: '?'}, stateHex: Buffer.alloc(6, '4401810c0000', 'hex'), commandHexList: []},
+		{deviceId: 'AirQuality', subId: '1', state: '0', name: '초미세먼지', stateMask: {pos: [5, 6], value: '?'}, stateHex: Buffer.alloc(5, '4401810c00', 'hex'), commandHexList: []},
+		{deviceId: 'AirQuality', subId: '2', state: '0', name: '미세먼지', stateMask: {pos: [7, 8], value: '?'}, stateHex: Buffer.alloc(5, '4401810c00', 'hex'), commandHexList: []},
+		{deviceId: 'AirQuality', subId: '3', state: '0', name: '유해가스', stateMask: {pos: [9, 10], value: '?'}, stateHex: Buffer.alloc(5, '4401810c00', 'hex'), commandHexList: []},
+		{deviceId: 'AirQuality', subId: '4', state: '0', name: '온도', stateMask: {pos: [11], value: '?'}, stateHex: Buffer.alloc(5, '4401810c00', 'hex'), commandHexList: []},
+		{deviceId: 'AirQuality', subId: '5', state: '0', name: '습도', stateMask: {pos: [13], value: '?'}, stateHex: Buffer.alloc(5, '4401810c00', 'hex'), commandHexList: []},
 	],
 	TOPIC_PREFIX: 'homenet-js'
 };
