@@ -59,42 +59,44 @@ const parser = sock.pipe(new DelimiterParser({ delimiter: Buffer.from([0xf7]) })
 parser.on('data', buffer => {
 	if (!mqttReady) return;
 
-	//console.log(buffer);
-	var hex = new Array();
-	Array.from(buffer.entries()).forEach(e => {
-		hex[e[0]] = e[1];
-	});
+	try {
+		var hex = new Array();
+		Array.from(buffer.entries()).forEach(e => {
+			hex[e[0]] = e[1];
+		});
 
-	//
-	CONST.DEVICES.forEach(device => {
-		if (device.stateMask.pos == -1) {
-			if (buffer.equals(device.stateHex)) {
-				publishProc(device, null);
-			}
-		} else {
-			var head = Buffer.alloc(device.stateHex.length);
-			buffer.copy(head, 0, 0, device.stateHex.length);
-			if (device.stateHex.equals(head)) {
-				// 공기질은 따로 처리한다
-				if (device.deviceId == "AirQuality") {
-					var gas = 0;
-					if (device.stateMask.pos.length == 1) {
-						gas = hex[device.stateMask.pos];
+		//
+		CONST.DEVICES.forEach(device => {
+			if (device.stateMask.pos == -1) {
+				if (buffer.equals(device.stateHex)) {
+					publishProc(device, null);
+				}
+			} else {
+				var head = Buffer.alloc(device.stateHex.length);
+				buffer.copy(head, 0, 0, device.stateHex.length);
+				if (device.stateHex.equals(head)) {
+					// 공기질은 따로 처리한다
+					if (device.deviceId == "AirQuality") {
+						var gas = 0;
+						if (device.stateMask.pos.length == 1) {
+							gas = hex[device.stateMask.pos];
+						} else {
+							// 유해가스 계산
+							// 04 10 : 4 * 255 + 10 = 1030
+							gas = parseInt(hex[device.stateMask.pos[0]].toString()) * 255 + parseInt(hex[device.stateMask.pos[1]].toString());
+						}
+						//console.log(device.deviceId, device.subId, gas);
+						publishProc(device, gas.toString());
 					} else {
-						// 유해가스 계산
-						// 04 10 : 4 * 255 + 10 = 1030
-						gas = parseInt(hex[device.stateMask.pos[0]].toString()) * 255 + parseInt(hex[device.stateMask.pos[1]].toString());
-					}
-					//console.log(device.deviceId, device.subId, gas);
-					publishProc(device, gas.toString());
-				} else {
-					if (hex[device.stateMask.pos] == device.stateMask.value) {
-						publishProc(device, null);
+						if (hex[device.stateMask.pos] == device.stateMask.value) {
+							publishProc(device, null);
+						}
 					}
 				}
 			}
-		}
-	});
+		});
+	} catch (e) {
+	}
 });
 
 //
@@ -124,25 +126,28 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
 	if (!mqttReady) return;
 
-	var topics = topic.split('/');
-	var msg = message.toString();
+	try {
+		var topics = topic.split('/');
+		var msg = message.toString();
 
-	if(topics[2] == 'status') {
-		//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
-		//homeStatus[topic] = message.toString();
-		//client.publish(topic, obj[stateName], {retain: true});
-	} else {
-		/*
-			payload -> ON -> 4f 4e
-			payload -> OFF -> 4f 46 46
-		*/
-		var objFound = CONST.DEVICES.find(e => topics[1] == e.deviceId + "-" + e.subId && topics[2] == 'command' && msg == e.state);
-		if (typeof objFound == "undefined") {
-			console.log("not found device");
+		if(topics[2] == 'status') {
+			//log('[MQTT] (청취)', topic, message, '[현재상태]', homeStatus[topic], '->', message.toString());
+			//homeStatus[topic] = message.toString();
+			//client.publish(topic, obj[stateName], {retain: true});
 		} else {
-			//console.log(objFound);
-			queue.push(objFound);
+			/*
+				payload -> ON -> 4f 4e
+				payload -> OFF -> 4f 46 46
+			*/
+			var objFound = CONST.DEVICES.find(e => topics[1] == e.deviceId + "-" + e.subId && topics[2] == 'command' && msg == e.state);
+			if (typeof objFound == "undefined") {
+				console.log("not found device");
+			} else {
+				//console.log(objFound);
+				queue.push(objFound);
+			}
 		}
+	} catch (e) {
 	}
 });
 
@@ -150,21 +155,24 @@ client.on('message', (topic, message) => {
 const publishProc = (objFound, state) => {
 	if (objFound == null) return ;
 
-	var targetName = objFound.deviceId + '-' + objFound.subId;
-	var topic = CONST.TOPIC_PREFIX + '/' + targetName + '/status';
-	var current = homeStatus[targetName];
-	var inputState = state == null ? objFound.state : state; 
+	try {
+		var targetName = objFound.deviceId + '-' + objFound.subId;
+		var topic = CONST.TOPIC_PREFIX + '/' + targetName + '/status';
+		var current = homeStatus[targetName];
+		var inputState = state == null ? objFound.state : state;
 
-	if(current == null || current != inputState) {
-		if(queue.length > 0) {
-			var found = queue.find(q => q.deviceId + '-' + q.subId === targetName && q.state === current);
-			if (found != null) return;
+		if(current == null || current != inputState) {
+			if(queue.length > 0) {
+				var found = queue.find(q => q.deviceId + '-' + q.subId === targetName && q.state === current);
+				if (found != null) return;
+			}
+
+			// 그외 상태반영
+			homeStatus[targetName] = inputState;
+			client.publish(topic, inputState, {retain: true});
+			log('[MQTT] (Publish)', topic, ':', inputState);
 		}
-
-		// 그외 상태반영
-		homeStatus[targetName] = inputState;
-		client.publish(topic, inputState, {retain: true});
-		log('[MQTT] (Publish)', topic, ':', inputState);
+	} catch (e) {
 	}
 }
 
@@ -172,12 +180,15 @@ const publishProc = (objFound, state) => {
 const commandProc = () => {
 	if (queue.length == 0) return;
 
-	var obj = queue.shift();
-	obj.commandHexList.forEach(command => {
-		sock.write(command);
-	});
+	try {
+		var obj = queue.shift();
+		obj.commandHexList.forEach(command => {
+			sock.write(command);
+		});
 
-	log('[Socket] (Send)', obj.deviceId + '-' + obj.subId, obj.name, '->', obj.state);
+		log('[Socket] (Send)', obj.deviceId + '-' + obj.subId, obj.name, '->', obj.state);
+	} catch (e) {
+	}
 }
 
 setTimeout(() => {
